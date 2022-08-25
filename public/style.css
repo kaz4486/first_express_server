@@ -1,0 +1,13 @@
+h1 {
+    font-weight: lighter;
+    font-style: italic;
+  }
+
+.dark h2{
+  visibility: hidden;
+}
+
+.dark {
+  background-color: black;
+  color: white;
+}
