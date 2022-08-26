@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
+const multer = require('multer');
 
 const app = express();
 
@@ -11,6 +12,10 @@ app.engine(
 app.set('view engine', '.hbs');
 
 app.use(express.static(path.join(__dirname, '/public')));
+
+app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -35,6 +40,22 @@ app.get('/history', (req, res) => {
 app.get('/hello/:name', (req, res) => {
   res.render('hello', { name: req.params.name });
 });
+
+const upload = multer({ dest: './public/images' });
+
+app.post(
+  '/contact/send-message',
+  upload.single('uploaded_file'),
+  (req, res) => {
+    const { author, sender, title, message } = req.body;
+    console.log(req.file);
+    if (author && sender && title && message && req.file) {
+      res.render('contact', { isSent: true, name: req.file.filename });
+    } else {
+      res.render('contact', { isError: true });
+    }
+  }
+);
 
 app.use((req, res) => {
   res.status(404).send('404 not found...');
